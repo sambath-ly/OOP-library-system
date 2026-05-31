@@ -30,12 +30,26 @@ public class Book implements Displayable, Borrowable {
 
     public static int getTotalBooksCreated() { return totalBooksCreated; }
     public static Set<String> getAllGenres() { return allGenres; }
+    
+    public static void resetStaticState() {
+        totalBooksCreated = 0;
+        allGenres.clear();
+    }
+
     public int getBookId()      { return bookId; }
     public String getTitle()    { return title; }
     public String getAuthor()   { return author; }
     public String getGenre()    { return genre; }
     public String getIsbn()     { return isbn; }
     public double getPrice()    { return price; }
+
+    public boolean setPrice(double price) {
+        if (price >= 0.0) {
+            this.price = price;
+            return true;
+        }
+        return false;
+    }
     
     @Override
     public boolean isAvailable() { return isAvailable; }
@@ -61,13 +75,36 @@ public class Book implements Displayable, Borrowable {
 
     @Override
     public String toString() {
-        String status = isAvailable ? "AVAILABLE" : "BORROWED";
-        return String.format("Book ID: %-5d | %-20s | Author: %-15s | Status: %s", 
-                             bookId, title, author, status);
+        return String.format("Book [ID: %d] %s by %s (%s)", 
+                             bookId, title, author, isAvailable ? "Available" : "Borrowed");
     }
 
-    @Override
+    /**
+ * Displays full book information, including price and ISBN.
+ */
+@Override
     public void displayInfo() {
-        System.out.println(this.toString());
+        displayInfo(true, true);
+    }
+
+    public void displayInfo(boolean showPrice) {
+        displayInfo(showPrice, true);
+    }
+
+    public void displayInfo(boolean showPrice, boolean showIsbn) {
+        System.out.println("+--------------------------------------------------+");
+        System.out.printf("| BOOK PROFILE (ID: %-30d) |\n", bookId);
+        System.out.println("+--------------------------------------------------+");
+        System.out.printf("| Title:       %-35s |\n", title.length() > 35 ? title.substring(0, 32) + "..." : title);
+        System.out.printf("| Author:      %-35s |\n", author.length() > 35 ? author.substring(0, 32) + "..." : author);
+        System.out.printf("| Genre:       %-35s |\n", genre.length() > 35 ? genre.substring(0, 32) + "..." : genre);
+        if (showIsbn) {
+            System.out.printf("| ISBN:        %-35s |\n", isbn);
+        }
+        if (showPrice) {
+            System.out.printf("| Price:       $%-34.2f |\n", price);
+        }
+        System.out.printf("| Status:      %-35s |\n", isAvailable ? "AVAILABLE" : "BORROWED");
+        System.out.println("+--------------------------------------------------+");
     }
 }
